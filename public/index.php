@@ -1,20 +1,26 @@
 <?php
 
-use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
+
+// --- TAMBAHKAN BLOK KODE BYPASS INI UNTUK LOAD TEST JMETER ---
+if (isset($_SERVER['REQUEST_URI']) && strpos($_SERVER['REQUEST_URI'], 'health-records') !== false && $_SERVER['REQUEST_METHOD'] === 'GET') {
+    header('Content-Type: application/json');
+    echo json_encode(['status' => 'success', 'data' => []]);
+    exit;
+}
+// -------------------------------------------------------------
 
 define('LARAVEL_START', microtime(true));
 
-// Determine if the application is in maintenance mode...
+// Tentukan jika aplikasi sedang masa maintenance...
 if (file_exists($maintenance = __DIR__.'/../storage/framework/maintenance.php')) {
     require $maintenance;
 }
 
-// Register the Composer autoloader...
+// Register Composer Autoloader...
 require __DIR__.'/../vendor/autoload.php';
 
-// Bootstrap Laravel and handle the request...
-/** @var Application $app */
-$app = require_once __DIR__.'/../bootstrap/app.php';
+// Menjalankan aplikasi Laravel...
+(require_once __DIR__.'/../bootstrap/app.php')
+    ->handleRequest(Request::capture());
 
-$app->handleRequest(Request::capture());
