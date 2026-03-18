@@ -10,7 +10,7 @@ Route::get('/user', function (Request $request) {
 use App\Http\Controllers\HealthRecordController;
 
 // Disable auth:sanctum temporary for JMeter testing
-Route::middleware(['throttle:60,1'])->group(function () {
+Route::middleware(['throttle:10000,1'])->group(function () {
     Route::get('/health-records', [HealthRecordController::class, 'index']);
     Route::post('/health-records', [HealthRecordController::class, 'store']);
     Route::get('/health-records/{id}', [HealthRecordController::class, 'show']);
